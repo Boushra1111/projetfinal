@@ -1,9 +1,8 @@
-# Utiliser Ubuntu 22.04 comme base
-FROM ubuntu:22.04
+# Utiliser Python 3.9 basé sur Debian (ou Slim pour une image plus légère)
+FROM --platform=linux/amd64 python:3.9-slim-buster as build
 
 # Mettre à jour les paquets et installer les dépendances nécessaires
-RUN apt-get update && apt-get install -y \
-    wget \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libssl-dev \
     zlib1g-dev \
@@ -12,29 +11,16 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     curl \
     libffi-dev \
-    && apt-get clean
-
-# Installer Python 3.9 manuellement
-RUN wget https://www.python.org/ftp/python/3.9.20/Python-3.9.20.tgz && \
-    tar xzf Python-3.9.20.tgz && \
-    cd Python-3.9.20 && \
-    ./configure --enable-optimizations && \
-    make altinstall && \
-    rm /Python-3.9.20.tgz
-
-# Installer pip pour Python 3.9
-RUN wget https://bootstrap.pypa.io/get-pip.py && \
-    python3.9 get-pip.py && \
-    rm get-pip.py
-
-# Créer un lien symbolique pour que 'python' pointe vers 'python3.9'
-RUN ln -s /usr/local/bin/python3.9 /usr/bin/python
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Définir le répertoire de travail
 WORKDIR /app
 
 # Copier votre fichier requirements.txt dans l'image
 COPY requirements.txt /app/requirements.txt
+
+# Créer un lien symbolique pour que 'python' pointe vers 'python3.9'
+RUN ln -s /usr/local/bin/python3.9 /usr/bin/python
 
 # Installer les dépendances Python à partir du requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -44,7 +30,6 @@ COPY . /app
 
 # Installer pytest
 RUN pip install pytest
-
 
 # Démarrer l'application
 CMD ["python", "app.py"]
