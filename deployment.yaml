@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: python-webapp
-        image: adildal/python-webapp:latest # Votre image Docker
+        image: boushra1138/flaskapp:latest # Votre image Docker
         ports:
         - containerPort: 5000 # Le port sur lequel votre application \u00e9coute
 ---
