@@ -35,8 +35,8 @@ pipeline {
    
         stage('Sonarqube analysis') {
             steps {
-                withSonarQubeEnv('Sonar') {
-                      sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://192.168.69.83:9000/ -Dsonar.projectName=python-webapp \
+                withSonarQubeEnv('sonar-token1') {
+                      sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://172.25.6.137:9000 -Dsonar.projectName=python-webapp \
                 -Dsonar.java.binaries=. \
                 -Dsonar.projectKey=python-webapp '''
                 }
